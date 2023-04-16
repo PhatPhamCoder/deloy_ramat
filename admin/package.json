@@ -1,7 +1,7 @@
 {
   "name": "admin-app",
   "version": "0.1.0",
-  "private": true,
+  "homepage": ".",
   "dependencies": {
     "@ant-design/plots": "^1.2.5",
     "@reduxjs/toolkit": "^1.9.2",

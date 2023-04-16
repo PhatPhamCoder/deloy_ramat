@@ -1,8 +1,12 @@
 import axios from "axios";
 import { base_url, config } from "../../utils/axiosConfig";
 
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 const getProducts = async () => {
-  const response = await axios.get(`${base_url}product`);
+  const response = await axiosInstance.get(`${base_url}product`);
 
   if (response.data) {
     return response.data;
@@ -10,7 +14,7 @@ const getProducts = async () => {
 };
 
 const getSingleProduct = async (id) => {
-  const response = await axios.get(`${base_url}product/${id}`);
+  const response = await axiosInstance.get(`${base_url}product/${id}`);
 
   if (response.data) {
     return response.data;
@@ -18,7 +22,7 @@ const getSingleProduct = async (id) => {
 };
 
 const addToWishList = async (prodId) => {
-  const response = await axios.put(
+  const response = await axiosInstance.put(
     `${base_url}product/wishlist`,
     { prodId },
     config,

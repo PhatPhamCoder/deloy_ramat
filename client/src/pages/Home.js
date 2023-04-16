@@ -28,6 +28,7 @@ import Currency from "react-currency-formatter";
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     getBlogs();
     getProducts();

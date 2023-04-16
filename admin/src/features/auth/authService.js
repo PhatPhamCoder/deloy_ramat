@@ -2,8 +2,15 @@ import axios from "axios";
 import { base_url } from "../../utils/base_url";
 import { config } from "../../utils/axiosConfig";
 
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 const login = async (userData) => {
-  const response = await axios.post(`${base_url}user/admin-login`, userData);
+  const response = await axiosInstance.post(
+    `${base_url}user/admin-login`,
+    userData,
+  );
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
@@ -11,12 +18,15 @@ const login = async (userData) => {
 };
 
 const getOrders = async () => {
-  const response = await axios.get(`${base_url}user/get-all-orders`, config);
+  const response = await axiosInstance.get(
+    `${base_url}user/get-all-orders`,
+    config,
+  );
   return response.data;
 };
 
 const getOrder = async (id) => {
-  const response = await axios.post(
+  const response = await axiosInstance.post(
     `${base_url}user/getorderbyuser/${id}`,
     "",
     config,
