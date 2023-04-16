@@ -2,15 +2,19 @@ import axios from "axios";
 import { base_url } from "../../utils/base_url";
 import { config } from "../../utils/axiosConfig";
 
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 const uploadImg = async (data) => {
-  const response = await axios.post(`${base_url}upload`, data, config);
+  const response = await axiosInstance.post(`${base_url}upload`, data, config);
   return response.data;
 };
 
 const deleteImg = async (id) => {
-  const response = await axios.delete(
+  const response = await axiosInstance.delete(
     `${base_url}upload/delete-img/${id}`,
-    config
+    config,
   );
   return response.data;
 };
