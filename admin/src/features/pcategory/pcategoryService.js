@@ -1,11 +1,9 @@
 import axios from "axios";
 import { base_url } from "../../utils/base_url";
 import { config } from "../../utils/axiosConfig";
-
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
-
 const getProductCategories = async () => {
   const response = await axiosInstance.get(`${base_url}category/`);
 
@@ -33,13 +31,16 @@ const updateProductCategory = async (category) => {
 };
 
 const getProductCategory = async (id) => {
-  const response = await axios.get(`${base_url}category/${id}`, config);
+  const response = await axiosInstance.get(`${base_url}category/${id}`, config);
 
   return response.data;
 };
 
 const deleteProductCategory = async (id) => {
-  const response = await axios.delete(`${base_url}category/${id}`, config);
+  const response = await axiosInstance.delete(
+    `${base_url}category/${id}`,
+    config,
+  );
 
   return response.data;
 };

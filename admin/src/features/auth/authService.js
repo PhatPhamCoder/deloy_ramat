@@ -1,11 +1,9 @@
 import axios from "axios";
 import { base_url } from "../../utils/base_url";
 import { config } from "../../utils/axiosConfig";
-
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
-
 const login = async (userData) => {
   const response = await axiosInstance.post(
     `${base_url}user/admin-login`,
@@ -19,16 +17,41 @@ const login = async (userData) => {
 
 const getOrders = async () => {
   const response = await axiosInstance.get(
-    `${base_url}user/get-all-orders`,
+    `${base_url}user/getallorders`,
     config,
   );
   return response.data;
 };
 
 const getOrder = async (id) => {
-  const response = await axiosInstance.post(
-    `${base_url}user/getorderbyuser/${id}`,
-    "",
+  const response = await axiosInstance.get(
+    `${base_url}user/getaorder/${id}`,
+    config,
+  );
+  return response.data;
+};
+
+const updateOrder = async (data) => {
+  console.log(data);
+  const response = await axiosInstance.put(
+    `${base_url}user/updateorder/${data.id}`,
+    { status: data.status },
+    config,
+  );
+  return response.data;
+};
+
+const getMonthlyOrders = async () => {
+  const response = await axiosInstance.get(
+    `${base_url}user/getMonthWiseOrderCount`,
+    config,
+  );
+  return response.data;
+};
+
+const getYearlyStatis = async () => {
+  const response = await axiosInstance.get(
+    `${base_url}user/getYearlyTotalOrders`,
     config,
   );
   return response.data;
@@ -37,7 +60,10 @@ const getOrder = async (id) => {
 const authService = {
   login,
   getOrders,
+  getMonthlyOrders,
+  getYearlyStatis,
   getOrder,
+  updateOrder,
 };
 
 export default authService;
