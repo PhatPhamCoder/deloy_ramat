@@ -71,13 +71,17 @@ var orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    month: {
+      type: String,
+      default: new Date().getMonth(),
+    },
     totalPriceAfterDiscount: {
       type: String,
       required: true,
     },
     orderStatus: {
       type: String,
-      default: "Ordered",
+      default: "Đã đặt hàng",
     },
   },
   {

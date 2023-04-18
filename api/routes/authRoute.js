@@ -18,21 +18,22 @@ const {
   saveAddress,
   userCart,
   getUserCart,
-  // emptyCart,
-  // applyCoupon,
   createOrder,
-  // getOrders,
-  // updateOrderStatus,
-  // getAllOrders,
-  // getOrderByUserId,
   removeProductFromCart,
   updateProductQuantityFromCart,
+  getMyOrders,
+  getMonthWiseOrderIncome,
+  getMonthWiseOrderCount,
+  getYearlyTotalOrders,
+  getAllOrders,
+  getSingleOrders,
+  updateOrders,
 } = require("../controller/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
-const {
-  checkout,
-  paymentVerification,
-} = require("../controller/paymentController");
+// const {
+//   checkout,
+//   paymentVerification,
+// } = require("../controller/paymentController");
 const router = express.Router();
 router.post("/register", createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
@@ -46,9 +47,30 @@ router.post("/cart", authMiddleware, userCart);
 // router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 router.post("/cart/create-order", authMiddleware, createOrder);
 router.get("/all-users", getAllUser);
-// router.get("/get-orders", authMiddleware, getOrders);
-// router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrders);
+router.get("/get-my-order", authMiddleware, getMyOrders);
+router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
+router.get("/getaorder/:id", authMiddleware, isAdmin, getSingleOrders);
+router.put("/updateorder/:id", authMiddleware, isAdmin, updateOrders);
 // router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
+router.get(
+  "/getMonthWiseOrderIncome",
+  authMiddleware,
+  isAdmin,
+  getMonthWiseOrderIncome,
+);
+router.get(
+  "/getMonthWiseOrderCount",
+  authMiddleware,
+  isAdmin,
+  getMonthWiseOrderCount,
+);
+router.get(
+  "/getYearlyTotalOrders",
+  authMiddleware,
+  isAdmin,
+  getYearlyTotalOrders,
+);
+
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);
 router.get("/wishlist", authMiddleware, getWishlist);
