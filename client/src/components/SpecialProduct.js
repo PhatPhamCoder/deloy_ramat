@@ -1,20 +1,21 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React from "react";
 import ReactStars from "react-rating-stars-component";
 import { Link, useNavigate } from "react-router-dom";
 import Currency from "react-currency-formatter";
 
 const SpecialProduct = (props) => {
-  const { title, brand, totalrating, price, quantity, sold, id } = props;
+  const { title, brand, totalrating, price, quantity, sold, id, image } = props;
   const navigate = useNavigate();
 
   return (
-    <div className="col-6 mb-3">
+    <>
       <div className="special-product-card">
-        <div className="d-flex">
-          <div className="mx-2">
-            <img src="images/book-02.png" className="img-fluid" alt="" />
+        <div className="row">
+          <div className="col-md-4 col-12">
+            <img src={image} className="img-fluid" alt="Image Flash Sale" />
           </div>
-          <div className="special-product-content ml-2">
+          <div className="col-md-8 col-12">
             <h4
               className="title fw-bold"
               style={{ cursor: "pointer" }}
@@ -83,7 +84,7 @@ const SpecialProduct = (props) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

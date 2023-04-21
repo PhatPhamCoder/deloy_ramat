@@ -2,7 +2,7 @@
 import React from "react";
 import ReactStars from "react-rating-stars-component";
 import { useLocation, useNavigate } from "react-router-dom";
-import prodcompare from "../images/prodcompare.svg";
+// import prodcompare from "../images/prodcompare.svg";
 import wish from "../images/wish.svg";
 import book02 from "../images/book-02.png";
 import addcart from "../images/add-cart.svg";
@@ -28,10 +28,10 @@ const ProductCard = (props) => {
           <div
             key={index}
             className={`${
-              location.pathname === "/product" ? `gr-${grid}` : "col-3"
+              location.pathname === "/product" ? `gr-${grid}` : "col-6"
             }`}
           >
-            <div className="product-card position-relative my-2">
+            <div className="product-card position-relative my-2 w-100 col-12">
               <div className="wishlist-icon position-absolute">
                 <button className="border-0 bg-transparent">
                   <img
@@ -81,9 +81,6 @@ const ProductCard = (props) => {
               </div>
               <div className="action-bar position-absolute">
                 <div className="d-flex flex-column gap-15">
-                  {/* <button className="border-0 bg-transparent">
-                    <img src={prodcompare} alt="addcart" />
-                  </button> */}
                   <button className="border-0 bg-transparent">
                     <img
                       onClick={() => navigate(`/product/` + item?._id)}

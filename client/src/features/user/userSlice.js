@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import { authService } from "./userService";
 import { toast } from "react-toastify";
 
@@ -57,6 +57,17 @@ export const getUserCart = createAsyncThunk(
   },
 );
 
+export const getOrders = createAsyncThunk(
+  "auth/order/get",
+  async (thunkAPI) => {
+    try {
+      return await authService.getUserOrders();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
 export const deleteCartProduct = createAsyncThunk(
   "auth/cart/product/delete",
   async (id, thunkAPI) => {
@@ -73,6 +84,39 @@ export const updateCartProduct = createAsyncThunk(
   async (cartDetail, thunkAPI) => {
     try {
       return await authService.updateProductQuantityFromCart(cartDetail);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const updateAUser = createAsyncThunk(
+  "auth/profile/update",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.updateUser(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const forgotPasswordToken = createAsyncThunk(
+  "auth/password/token",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.forgotPassword(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const resetPasswordToken = createAsyncThunk(
+  "auth/password/reset",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.resetPassword(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -250,7 +294,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.createdOrder = action.payload;
         if (state.isSuccess) {
-          toast.success("Đạt hàng thành công");
+          toast.success("Đặt hàng thành công");
         }
       })
       .addCase(createAnOrder.rejected, (state, action) => {
@@ -260,6 +304,84 @@ export const authSlice = createSlice({
         state.message = action.error;
         if (state.isError) {
           toast.warning("Vui lòng thử lại!");
+        }
+      })
+      .addCase(getOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.getOrderProduct = action.payload;
+      })
+      .addCase(getOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(updateAUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateAUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.updatedUser = action.payload;
+        if (state.isSuccess) {
+          toast.success("Cập nhật thành công!");
+        }
+      })
+      .addCase(updateAUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isSuccess === false) {
+          toast.error("Người dùng cập nhật bị lỗi!");
+        }
+      })
+      .addCase(forgotPasswordToken.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPasswordToken.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.forgotedPasswordToken = action.payload;
+        if (state.isSuccess) {
+          toast.success("Cập nhật thành công!");
+        }
+      })
+      .addCase(forgotPasswordToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isSuccess === false) {
+          toast.error("Cập nhật bị lỗi!");
+        }
+      })
+      .addCase(resetPasswordToken.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resetPasswordToken.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.resetedPassword = action.payload;
+        if (state.isSuccess) {
+          toast.success("Cập nhật thành công!");
+        }
+      })
+      .addCase(resetPasswordToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        if (state.isSuccess === false) {
+          toast.error("Cập nhật bị lỗi!");
         }
       });
   },

@@ -9,35 +9,66 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../features/products/productSlice";
 
 const OurStore = () => {
-  const [grid, setGrid] = useState(4);
   const dispatch = useDispatch();
+  const [grid, setGrid] = useState(4);
+  const productState = useSelector((state) => state?.product?.product);
+  const [brands, setBrands] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [tags, setTags] = useState(null);
+  const [minPrice, setMinPrice] = useState(null);
+  const [maxPrice, setMaxPrice] = useState(null);
+  const [sort, setSort] = useState(null);
 
-  const getProducts = () => {
-    dispatch(getAllProduct());
-  };
+  // Filter States
+  const [tag, setTag] = useState([]);
+  const [brand, setBrand] = useState([]);
+  const [categorie, setCategorie] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      getProducts();
-    }, 500);
-  }, []);
+    let newBrands = [];
+    let category = [];
+    let newtags = [];
 
-  const productState = useSelector((state) => state?.product?.product);
+    for (let index = 0; index < productState.length; index++) {
+      const element = productState[index];
+      newBrands.push(element?.brand);
+      category.push(element?.category);
+      newtags.push(element?.tags);
+    }
+    setBrands(newBrands);
+    setCategories(category);
+    setTags(newtags);
+  }, [productState]);
+
+  useEffect(() => {
+    getProducts();
+  }, [sort, tag, categorie, brand, minPrice, maxPrice]);
+
+  const getProducts = () => {
+    dispatch(
+      getAllProduct({ sort, tag, categorie, brand, minPrice, maxPrice }),
+    );
+  };
+
   return (
     <>
-      <Meta title="Our Store" />
+      <Meta title="Danh Sách sản phẩm" />
       <BreakCrumb title="Our Store" />
       <Container class1="store-wrapper home-wrapper-2 py-5">
         <div className="row">
-          <div className="col-3">
+          <div className="col col-md-3 col-lg-3">
             <div className="filter-card mb-3">
-              <h3 className="filter-title">Shop By Categories</h3>
+              <h3 className="filter-title">Danh mục sản phẩm của shop</h3>
               <div>
                 <ul className="ps-0">
-                  <li>Sổ tay lò xo</li>
-                  <li>Album Dán Ảnh</li>
-                  <li>Sticker Dán</li>
-                  <li>Quà tặng Handmade</li>
+                  {categories &&
+                    [...new Set(categories)]?.map((item, index) => {
+                      return (
+                        <li key={index} onClick={() => setCategorie(item)}>
+                          {item}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             </div>
@@ -69,8 +100,9 @@ const OurStore = () => {
                       className="form-control"
                       id="floatingInput"
                       placeholder="Form"
+                      onChange={(e) => setMinPrice(e.target.value)}
                     />
-                    <label for="floatingInput">Form</label>
+                    <label for="floatingInput">Từ</label>
                   </div>
                   <div className="form-floating">
                     <input
@@ -78,17 +110,10 @@ const OurStore = () => {
                       className="form-control"
                       id="floatingInput"
                       placeholder="to"
+                      onChange={(e) => setMaxPrice(e.target.value)}
                     />
-                    <label for="floatingInput1">To</label>
+                    <label for="floatingInput1">Đến</label>
                   </div>
-                </div>
-                <h5 className="sub-title">Màu sắc</h5>
-                <div className="d-flex flex-wrap">
-                  <ul className="colors ps-0">
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                  </ul>
                 </div>
                 <h5 className="sub-title">Kích thước</h5>
                 <div className="form-check">
@@ -118,97 +143,60 @@ const OurStore = () => {
             <div className="filter-card mb-3">
               <h3 className="filter-title">Thẻ sản phẩm</h3>
               <div className="product-tag d-flex flex-wrap align-items-center gap-10">
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  NoteBook
-                </span>
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  Sổ tay
-                </span>
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  Sổ lò xo
-                </span>
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  Quà tặng
-                </span>
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  Handmade
-                </span>
-                <span className="badge bg-light text-secondary rounded-3 py-2 px-3">
-                  Ghi chú
-                </span>
+                {tags &&
+                  [...new Set(tags)]?.map((item, index) => {
+                    return (
+                      <span
+                        className="badge bg-light text-secondary rounded-3 py-2 px-3"
+                        key={index}
+                        onClick={() => setTag(item)}
+                      >
+                        {item}
+                      </span>
+                    );
+                  })}
               </div>
             </div>
             <div className="filter-card mb-3">
-              <h3 className="filter-title">Sản phẩm đề xuất</h3>
-              <div>
-                <div className="random-products d-flex mb-3 gap-10">
-                  <div className="w-50">
-                    <img
-                      src="images/book-02.png"
-                      className="img-fluid rounded-3"
-                      alt=""
-                    />
-                  </div>
-                  <div className="w-50">
-                    <h5>Sổ Ghi Chép Note Nhạc Sheet Nhạc Size A5</h5>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      activeColor="#ffd700"
-                      value={4}
-                      edit={true}
-                    />
-                    <p className="price">
-                      <b>đ100.000</b>
-                    </p>
-                  </div>
-                </div>
-                <div className="random-products d-flex gap-10">
-                  <div className="w-50">
-                    <img
-                      src="images/book-02.png"
-                      className="img-fluid rounded-3"
-                      alt=""
-                    />
-                  </div>
-                  <div className="w-50">
-                    <h5>Sổ Ghi Chép Note Nhạc Sheet Nhạc Size A5</h5>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      activeColor="#ffd700"
-                      value={4}
-                      edit={true}
-                    />
-                    <p className="price">
-                      <b>đ100.000</b>
-                    </p>
-                  </div>
-                </div>
+              <h3 className="filter-title">Chủ đề sản phẩm</h3>
+              <div className="product-tag d-flex flex-wrap align-items-center gap-10">
+                {tags &&
+                  [...new Set(brands)]?.map((item, index) => {
+                    return (
+                      <span
+                        className="badge bg-light text-secondary rounded-3 py-2 px-3"
+                        key={index}
+                        onClick={() => setBrand(item)}
+                      >
+                        {item}
+                      </span>
+                    );
+                  })}
               </div>
             </div>
           </div>
-          <div className="col-9">
-            <div className="filter-sort-grid mb-4">
-              <div className="d-flex justify-content-between align-itesm-center">
-                <div className="d-flex align-items-center gap-10">
+          <div className="col-12 col-md-9 col-lg-9 row">
+            <div className="col-12 filter-sort-grid mb-4">
+              <div className="d-flex justify-content-between align-items-center row">
+                <div className="col-12 col-md-8 col-lg-8 d-flex align-items-center gap-10 my-3">
                   <p className="mb-0 d-block" style={{ width: "180px" }} s>
                     Sắp xếp theo:
                   </p>
                   <select
                     name=""
-                    defaultValue={"manual"}
+                    defaultValue={"manula"}
                     className="form-control form-select"
                     id=""
+                    onChange={(e) => setSort(e.target.value)}
                   >
                     <option value="manual">Loại giấy</option>
-                    <option value="">Giá Thấp đến Cao </option>
-                    <option value="">Giá Cao đến Thấp </option>
-                    <option value="">Mới nhất</option>
-                    <option value="">Bán chạy</option>
+                    <option value="price">Giá Thấp đến Cao </option>
+                    <option value="-price">Giá Cao đến Thấp </option>
+                    <option value="createdAt">Mới nhất</option>
+                    <option value="hotdeal">Bán chạy</option>
                   </select>
                 </div>
-                <div className="d-flex align-items-center gap-10">
+                <div className="col-12 col-md-4 col-lg-4 d-flex align-items-center gap-10 mt-3">
                   <p className="totalproducts mb-0">21 Sản phẩm</p>
                   <div className="d-flex gap-10 align-items-center grid">
                     <img
@@ -248,7 +236,7 @@ const OurStore = () => {
               </div>
             </div>
             <div className="products-list pb-5">
-              <div className="d-flex gap-10 flex-wrap">
+              <div className="d-flex flex-wrap gap-10">
                 <ProductCard
                   data={productState ? productState : []}
                   grid={grid}

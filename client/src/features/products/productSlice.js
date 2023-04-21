@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { productService } from "./productsService";
+import { toast } from "react-toastify";
 
 export const getAllProduct = createAsyncThunk(
   "product/get",
-  async (thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      return await productService.getProducts();
+      return await productService.getProducts(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -28,6 +29,17 @@ export const addToWishList = createAsyncThunk(
   async (prodId, thunkAPI) => {
     try {
       return await productService.addToWishList(prodId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const addRating = createAsyncThunk(
+  "product/rating",
+  async (data, thunkAPI) => {
+    try {
+      return await productService.rateProduct(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -87,9 +99,28 @@ export const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.singleProduct = action.payload;
-        state.message = "Product Fetched SuccedFully !";
+        state.message = "Product Fetched SuccessFully !";
       })
       .addCase(getAProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+      })
+      .addCase(addRating.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addRating.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.rating = action.payload;
+        state.message = "Rating added SuccessFully !";
+        if (state.isSuccess) {
+          toast.success("Đánh giá thành công !");
+        }
+      })
+      .addCase(addRating.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

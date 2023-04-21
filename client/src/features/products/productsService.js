@@ -5,8 +5,9 @@ const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-const getProducts = async () => {
-  const response = await axiosInstance.get(`${base_url}product`);
+const getProducts = async (data) => {
+  console.log(data?.brand);
+  const response = await axiosInstance.get(`${base_url}product/`);
 
   if (response.data) {
     return response.data;
@@ -32,8 +33,20 @@ const addToWishList = async (prodId) => {
   }
 };
 
+const rateProduct = async (data) => {
+  const response = await axiosInstance.put(
+    `${base_url}product/rating`,
+    data,
+    config,
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
 export const productService = {
   getProducts,
   addToWishList,
   getSingleProduct,
+  rateProduct,
 };

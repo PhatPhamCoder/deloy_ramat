@@ -6,7 +6,7 @@ import { ImLocation2 } from "react-icons/im";
 import { AiOutlineMail } from "react-icons/ai";
 import { BsTelephone } from "react-icons/bs";
 import ScrollToTop from "react-scroll-to-top";
-import { FiPhoneCall } from "react-icons/fi";
+import logo from "../images/logo-header.png";
 const Footer = () => {
   return (
     <>
@@ -80,10 +80,11 @@ const Footer = () => {
         <div className="container-xxl">
           <div className="row">
             <div className="col-9 col-md-4 pb-2">
-              <h4 className="text-white mb-4">
+              <h4 className="text-white mb-4 d-flex flex-column">
                 <Link to="/contact" className="text-white">
                   Liên hệ chúng tôi
                 </Link>
+                <img src={logo} className="w-50 h-50 mt-2" alt="logo-footer" />
               </h4>
               <div>
                 <address className="text-white fs-7">

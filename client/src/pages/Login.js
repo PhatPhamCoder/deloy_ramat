@@ -37,8 +37,8 @@ const Login = () => {
       <Meta title="Đăng nhập" />
       <Container class1="login-wrapper home-wrapper-2 py-5">
         <div className="row">
-          <div className="col-12">
-            <div className="auth-card">
+          <div className="col-12 login-container">
+            <div className="auth-card login-body ">
               <img
                 src={logoHeader}
                 alt="logo-header"
@@ -46,7 +46,6 @@ const Login = () => {
               />
               <h2 className="text-center mb-3">Đăng nhập</h2>
               <form
-                action=""
                 onSubmit={formik.handleSubmit}
                 className="d-flex flex-column gap-10"
               >

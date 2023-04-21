@@ -1,8 +1,10 @@
 import axios from "axios";
 import { base_url, config } from "../../utils/axiosConfig";
+
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
+
 const register = async (userData) => {
   const response = await axiosInstance.post(
     `${base_url}user/register`,
@@ -78,6 +80,47 @@ const createOrder = async (orderDetail) => {
   }
 };
 
+const getUserOrders = async () => {
+  const response = await axiosInstance.get(
+    `${base_url}user/get-my-order`,
+    config,
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const updateUser = async (data) => {
+  const response = await axiosInstance.put(
+    `${base_url}user/edit-user`,
+    data,
+    config,
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const forgotPassword = async (data) => {
+  const response = await axiosInstance.post(
+    `${base_url}user/forgot-password-token`,
+    data,
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
+const resetPassword = async (data) => {
+  const response = await axiosInstance.put(
+    `${base_url}user/reset-password/${data.token}`,
+    { password: data?.password },
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
 export const authService = {
   register,
   login,
@@ -87,4 +130,8 @@ export const authService = {
   removeProductFromCart,
   updateProductQuantityFromCart,
   createOrder,
+  getUserOrders,
+  updateUser,
+  forgotPassword,
+  resetPassword,
 };

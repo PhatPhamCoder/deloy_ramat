@@ -17,7 +17,6 @@ import moment from "moment";
 import { getAllProduct } from "../features/products/productSlice";
 import ReactStars from "react-rating-stars-component";
 import { useNavigate } from "react-router-dom";
-// import prodcompare from "../images/prodcompare.svg";
 import wish from "../images/wish.svg";
 import book02 from "../images/book-02.png";
 import addcart from "../images/add-cart.svg";
@@ -28,7 +27,6 @@ import Currency from "react-currency-formatter";
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   useEffect(() => {
     getBlogs();
     getProducts();
@@ -51,25 +49,25 @@ const Home = () => {
     <>
       <Meta title="Ramat Note Book" />
       <div className="home-wrapper-1">
-        <div className="carousel-wrapper">
+        <div className="carousel-wrapper slide-header">
           <Carousel fade>
             <Carousel.Item>
               <img
-                className="d-block w-100 img-fluid rounded"
+                className="d-block w-100 img-fluid rounded slide-header-image"
                 src={Banner}
                 alt="banner-1"
               />
             </Carousel.Item>
             <Carousel.Item>
               <img
-                className="d-block w-100 img-fluid rounded"
+                className="d-block w-100 img-fluid rounded slide-header-image"
                 src={Banner2}
                 alt="Second slide"
               />
             </Carousel.Item>
             <Carousel.Item>
               <img
-                className="d-block w-100 img-fluid rounded"
+                className="d-block w-100 img-fluid rounded slide-header-image"
                 src={Banner3}
                 alt="Third slide"
               />
@@ -89,16 +87,19 @@ const Home = () => {
             productState?.map((item, index) => {
               if (item?.tags === "Home Page") {
                 return (
-                  <SpecialProduct
-                    key={index}
-                    title={item?.title}
-                    brand={item?.brand}
-                    totalrating={item?.totalrating.toString()}
-                    price={item?.price}
-                    quantity={item?.quantity}
-                    sold={item?.sold}
-                    id={item?._id}
-                  />
+                  <div className="col-12 col-md-6">
+                    <SpecialProduct
+                      key={index}
+                      title={item?.title}
+                      brand={item?.brand}
+                      totalrating={item?.totalrating.toString()}
+                      price={item?.price}
+                      quantity={item?.quantity}
+                      sold={item?.sold}
+                      id={item?._id}
+                      image={item?.images?.[0]?.url}
+                    />
+                  </div>
                 );
               }
             })}
@@ -111,23 +112,23 @@ const Home = () => {
             Bộ sưu tập
           </h3>
         </div>
-        <div className="row">
-          <div className="col-12 col-md-3 d-flex align-items-center justify-content-center">
+        <div className="row collection-mobile">
+          <div className="col-12 col-md-3 col-lg-3 d-flex align-items-center justify-content-center">
             <div className="colection-card text-center">
               <h5 className="text-dark">Sổ tay quà tặng</h5>
             </div>
           </div>
-          <div className="col-12 col-md-3 d-flex align-items-center justify-content-center">
+          <div className="col-12 col-md-3 col-lg-3 d-flex align-items-center justify-content-center">
             <div className="colection-card text-center">
               <h5 className="text-dark">Sổ tay thiết kế</h5>
             </div>
           </div>
-          <div className="col-12 col-md-3 d-flex align-items-center justify-content-center">
+          <div className="col-12 col-md-3 col-lg-3 d-flex align-items-center justify-content-center">
             <div className="colection-card text-center">
               <h5 className="text-dark">Handmade</h5>
             </div>
           </div>
-          <div className="col-12 col-md-3 d-flex align-items-center justify-content-center">
+          <div className="col-12 col-md-3 col-lg-3 d-flex align-items-center justify-content-center">
             <div className="colection-card text-center">
               <h5 className="text-dark">
                 Quà tặng <br />
@@ -141,10 +142,13 @@ const Home = () => {
       <Container class1="home-wrapper-1 pb-4">
         <div className="row">
           <div className="col-12">
-            <div className="services d-flex align-items-center justify-content-between">
+            <div className="services d-flex align-items-center justify-content-between collection-mobile-down">
               {services?.map((item, index) => {
                 return (
-                  <div className="d-flex align-items-center gap-15" key={index}>
+                  <div
+                    className="d-flex align-items-center gap-15 collection-mobile-down"
+                    key={index}
+                  >
                     <img src={item.image} alt={item.title} />
                     <div>
                       <h6 className="fw-bold">{item.title}</h6>
@@ -168,7 +172,7 @@ const Home = () => {
           {productState &&
             productState?.map((item, index) => {
               return (
-                <div key={index} className="col-3">
+                <div key={index} className="col-6 col-md-3">
                   <div className="product-card position-relative my-2">
                     <div className="wishlist-icon position-absolute">
                       <button className="border-0 bg-transparent">
@@ -206,16 +210,6 @@ const Home = () => {
                         value={item?.totalrating.toString()}
                         edit={true}
                       />
-                      {/* <p
-                        style={{
-                          height: "50px",
-                          lineHeight: "30px",
-                          overflow: "hidden",
-                        }}
-                        dangerouslySetInnerHTML={{
-                          __html: item?.description.substr(0, 70),
-                        }}
-                      ></p> */}
                       <p className="price">
                         <Currency
                           quantity={item?.price}
@@ -229,9 +223,6 @@ const Home = () => {
                     </div>
                     <div className="action-bar position-absolute">
                       <div className="d-flex flex-column gap-15">
-                        {/* <button className="border-0 bg-transparent">
-                          <img src={prodcompare} alt="addcart" />
-                        </button> */}
                         <button className="border-0 bg-transparent">
                           <img
                             onClick={() => navigate(`/product/` + item?._id)}
@@ -262,7 +253,7 @@ const Home = () => {
             blogState?.map((item, index) => {
               if (index < 4) {
                 return (
-                  <div className="col-3 mb-3" key={index}>
+                  <div className="col-6 col-mb-3 col-lg-3" key={index}>
                     <BlogCard
                       id={item?._id}
                       title={item?.title}

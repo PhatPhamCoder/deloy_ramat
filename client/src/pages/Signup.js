@@ -39,8 +39,8 @@ const Signup = () => {
       <Meta title="Tạo tài khoản" />
       <Container class1="login-wrapper home-wrapper-2 py-5">
         <div className="row">
-          <div className="col-12">
-            <div className="auth-card">
+          <div className="col-12 login-container mt-3">
+            <div className="auth-card login-body ">
               <img
                 src={logoHeader}
                 alt="logo-header"

@@ -11,12 +11,13 @@ import {
   updateCartProduct,
 } from "../features/user/userSlice";
 import Currency from "react-currency-formatter";
+import { FaPercent } from "react-icons/fa";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const [productUpdateDetail, setProductUpdateDetail] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-
+  const [open, setOpen] = useState(false);
   const userCartState = useSelector((state) => state?.auth?.cartProduct);
   useEffect(() => {
     dispatch(getUserCart());
@@ -61,27 +62,46 @@ const Cart = () => {
       <Container class1="cart-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
-            <div className="col-12">
-              <div className="cart-header d-flex justify-content-between align-items-center">
+            <div className="col col-md-8 col-lg-8">
+              {/* <div className="cart-header d-flex justify-content-between align-items-center">
                 <h4 className="cart-col-1">Tên sản phẩm</h4>
                 <h4 className="cart-col-2">Giá tiền</h4>
-                <h4 className="cart-col-3">Số lượng</h4>
+                <h4 className="cart-col-3">Số lượng</h4>P
                 <h4 className="cart-col-4">Thành tiền</h4>
-              </div>
+              </div> */}
               {userCartState &&
                 userCartState?.map((item, index) => {
                   return (
-                    <div className="cart-data py-3 mb-2 d-flex justify-content-between align-items-center">
-                      <div className="cart-col-1 gap-15 d-flex align-items-center">
-                        <div className="w-25 p-2">
+                    <div
+                      style={{
+                        border: "2px solid #0099ff",
+                        borderRadius: "8px",
+                        padding: "8px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <div className="row mb-2">
+                        <div className="col-4">
                           <img
                             src={item?.productId?.images?.[0]?.url}
                             alt="product-name"
-                            className="img-fluid rounded-3"
+                            className="img-fluid rounded-3 m-0 p-0"
                           />
                         </div>
-                        <div className="w-75 mb-0">
-                          <p>{item?.productId?.title}</p>
+                        <div className="col-8 mb-0">
+                          <p className="d-flex justify-content-between">
+                            {item?.productId?.title}
+                            <h5 className="price">
+                              <Currency
+                                quantity={item?.price}
+                                currency="VND"
+                                locale="vi_VN"
+                                pattern="##,### !"
+                                decimal=","
+                                group="."
+                              />
+                            </h5>
+                          </p>
                           <p>Kích thước: A5</p>
                           <p className="d-flex gap-3">
                             Màu sắc:
@@ -91,27 +111,11 @@ const Cart = () => {
                               />
                             </ul>
                           </p>
-                        </div>
-                      </div>
-                      <div className="cart-col-2">
-                        <h5 className="price">
-                          <Currency
-                            quantity={item?.price}
-                            currency="VND"
-                            locale="vi_VN"
-                            pattern="##,### !"
-                            decimal=","
-                            group="."
-                          />
-                        </h5>
-                      </div>
-                      <div className="cart-col-3 gap-15 d-flex align-items-center">
-                        <div>
                           <input
                             className="form-control btn-outline-none"
                             type="number"
                             min={1}
-                            max={100}
+                            max={50}
                             name=""
                             value={
                               setProductUpdateDetail?.quantity
@@ -124,7 +128,20 @@ const Cart = () => {
                                 quantity: e.target.value,
                               });
                             }}
+                            style={{ width: "100px" }}
                           />
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center justify-content-between border-top pt-2">
+                        <div className="d-flex gap-2">
+                          Tình trạng:
+                          {item?.quantity > 5 ? (
+                            <p className="mb-1" style={{ color: "#30b68a" }}>
+                              Còn hàng
+                            </p>
+                          ) : (
+                            <p style={{ color: "red" }}>Hết hàng</p>
+                          )}
                         </div>
                         <div>
                           <AiFillDelete
@@ -134,8 +151,36 @@ const Cart = () => {
                           />
                         </div>
                       </div>
-                      <div className="cart-col-4">
-                        <h5 className="total-price">
+                    </div>
+                  );
+                })}
+            </div>
+            <div
+              className="col-12 col-md-4 col-lg-4 py-2 bg-white"
+              style={{ borderRadius: "10px" }}
+            >
+              {userCartState &&
+                userCartState?.map((item, index) => {
+                  return (
+                    <>
+                      <div className="d-flex align-items-center justify-content-between mb-1">
+                        <h5>Bạn có mã ưu đãi?</h5>
+                        <FaPercent onClick={() => setOpen(true)} />
+                      </div>
+                      {open === true && (
+                        <div className="d-flex justify-content-start align-items-center gap-2 mb-2">
+                          <input
+                            className="input-group-cart"
+                            type="text"
+                            placeholder="Nhập mã ưu đãi tại đây"
+                          />
+                          <span className="button-submit">Áp dụng</span>
+                        </div>
+                      )}
+                      <h4 className="fw-bold">Thanh Toán</h4>
+                      <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h5>Tổng giá trị sản phẩm</h5>
+                        <p className="mb-0 fw-bold">
                           <Currency
                             quantity={item?.price * item?.quantity}
                             currency="VND"
@@ -144,25 +189,77 @@ const Cart = () => {
                             decimal=","
                             group="."
                           />
-                        </h5>
+                        </p>
                       </div>
-                    </div>
+                      <div className="d-flex align-items-center justify-content-between border-bottom mb-3">
+                        <h5>Phí vận Chuyển</h5>
+                        {totalAmount < "500000" ? (
+                          <p className="mb-0 fw-bold">
+                            <Currency
+                              quantity={30000}
+                              currency="VND"
+                              locale="vi_VN"
+                              pattern="##,### !"
+                              decimal=","
+                              group="."
+                            />
+                          </p>
+                        ) : (
+                          <p className="fs-5">Free Ship</p>
+                        )}
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center gap-2 mb-2">
+                        <h5>Tổng giá trị phải thanh toán</h5>
+                        <p className="mb-0 fw-bold">
+                          <Currency
+                            quantity={
+                              totalAmount < "500000"
+                                ? totalAmount + 30000
+                                : totalAmount
+                            }
+                            currency="VND"
+                            locale="vi_VN"
+                            pattern="##,### !"
+                            decimal=","
+                            group="."
+                          />
+                        </p>
+                      </div>
+                      <p className="d-flex justify-content-end">
+                        Thuế và vận chuyển được tính khi thanh toán
+                      </p>
+                      <p className="d-flex justify-content-end">
+                        Tải lại trang nếu không thấy đơn hàng
+                      </p>
+                      <div className="d-flex flex-column justify-content-between align-items-center gap-3">
+                        <Link
+                          to="/product"
+                          className="button w-100 text-center"
+                        >
+                          Tiếp tục mua sắm
+                        </Link>
+                        <Link
+                          to="/checkout"
+                          className="button w-100 text-center fw-bold"
+                        >
+                          Thanh toán
+                        </Link>
+                        <br />
+                      </div>
+                    </>
                   );
                 })}
-            </div>
-            <div className="col-12 py-2">
-              <div className="d-flex justify-content-between">
-                <Link to="/product" className="button">
-                  Tiếp tục mua sắm
-                </Link>
-                Tải lại trang nếu không thấy đơn hàng
-              </div>
-              {(totalAmount !== 0 || totalAmount !== null) && (
+
+              {/* {(totalAmount !== 0 || totalAmount !== null) && (
                 <div className="d-flex flex-column align-items-end">
                   <h4 className="fw-bold">
                     Tổng đơn hàng:
                     <Currency
-                      quantity={totalAmount}
+                      quantity={
+                        totalAmount < "500000"
+                          ? totalAmount + 30000
+                          : totalAmount
+                      }
                       currency="VND"
                       locale="vi_VN"
                       pattern="##,### !"
@@ -171,11 +268,8 @@ const Cart = () => {
                     />
                   </h4>
                   <p>Thuế và vận chuyển được tính khi thanh toán</p>
-                  <Link to="/checkout" className="button">
-                    Thanh toán
-                  </Link>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>

@@ -9,7 +9,11 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { FaShareSquare } from "react-icons/fa";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { getAProduct } from "../features/products/productSlice";
+import {
+  addRating,
+  getAProduct,
+  getAllProduct,
+} from "../features/products/productSlice";
 import Currency from "react-currency-formatter";
 import Color from "../components/Color";
 import { toast } from "react-toastify";
@@ -17,17 +21,19 @@ import { AddToCart, getUserCart } from "../features/user/userSlice";
 const SingleProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getProductId = location.pathname.split("/")[2];
   const [alreadyAdded, setAlreadyAdded] = useState(false);
-  const dispatch = useDispatch();
   const [color, setColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const productState = useSelector((state) => state?.product?.singleProduct);
+  const productsState = useSelector((state) => state?.product?.product);
   const cartState = useSelector((state) => state?.auth?.cartProduct);
 
   useEffect(() => {
     dispatch(getAProduct(getProductId));
     dispatch(getUserCart());
+    dispatch(getAllProduct());
   }, []);
 
   useEffect(() => {
@@ -74,6 +80,39 @@ const SingleProduct = () => {
     textField.remove();
   };
 
+  const [popularProduct, setPopularProduct] = useState([]);
+  useEffect(() => {
+    let data = [];
+    for (let index = 0; index < productsState.length; index++) {
+      const element = productsState[index];
+      if (element.tags === "popular") {
+        data.push(element);
+      }
+      setPopularProduct(data);
+    }
+  }, [productsState]);
+
+  const [star, setStar] = useState(null);
+  const [comment, setComment] = useState(null);
+
+  const addRatingToProduct = () => {
+    if (star === null) {
+      toast.error("Vui lòng đánh giá để nhận ưu đãi!");
+      return false;
+    } else if (comment === null) {
+      toast.error("Viết đánh giá về sản phẩm!");
+      return false;
+    } else {
+      dispatch(
+        addRating({ star: star, comment: comment, prodId: getProductId }),
+      );
+      setTimeout(() => {
+        dispatch(getAProduct(getProductId));
+      }, 200);
+    }
+    return false;
+  };
+
   return (
     <>
       <Meta
@@ -84,7 +123,7 @@ const SingleProduct = () => {
       />
       <Container class1="main-product-wrapper py-5 home-wrapper-2">
         <div className="row">
-          <div className="col-6">
+          <div className="col-12 col-md-6 col-lg-6">
             <div className="main-product-image">
               <div>
                 <ReactImageZoom {...props} />
@@ -100,7 +139,7 @@ const SingleProduct = () => {
               })}
             </div>
           </div>
-          <div className="col-6">
+          <div className="col-12 col-md-6 col-lg-6">
             <div className="main-product-details">
               <div className="border-bottom">
                 <h3 className="title">
@@ -177,9 +216,13 @@ const SingleProduct = () => {
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Trạng thái:</h3>
                   <p className="product-data mb-0">
-                    {productState?.quantity - productState?.sold > 0
-                      ? "Còn hàng"
-                      : "Hết hàng"}
+                    {productState?.quantity - productState?.sold > 0 ? (
+                      <p className="mb-1" style={{ color: "#30b68a" }}>
+                        Còn hàng
+                      </p>
+                    ) : (
+                      <p style={{ color: "red" }}>Hết hàng</p>
+                    )}
                   </p>
                 </div>
                 <div className="d-flex gap-15 flex-row align-items-center mt-2 mb-3">
@@ -278,80 +321,62 @@ const SingleProduct = () => {
                       count={5}
                       size={24}
                       activeColor="#ffd700"
-                      value={productState?.ratings}
                       edit={true}
+                      onChange={(e) => {
+                        setStar(e);
+                      }}
                     />
                     <p className="mb-0">2 đánh giá</p>
                   </div>
                 </div>
-                {orderedProduct && (
-                  <div>
-                    <a href="/" className="text-dark text-decoration-underline">
-                      Viết đánh giá
-                    </a>
-                  </div>
-                )}
               </div>
               <div className="review-form py-4">
                 <h4>Đánh giá của khách hàng</h4>
-                <form action="" className="d-flex flex-column gap-15">
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Họ và tên"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Địa chỉ Email"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Số điện thoại"
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      name=""
-                      placeholder="Đánh giá"
-                      id=""
-                      className="w-100 form-control"
-                      cols="30"
-                      row="4"
-                    ></textarea>
-                  </div>
-                  <div className="d-flex justify-content-end">
-                    <button className="button border-0">Gửi đánh giá</button>
-                  </div>
-                </form>
+                <div className="mb-3">
+                  <textarea
+                    name=""
+                    placeholder="Đánh giá"
+                    id=""
+                    className="w-100 form-control"
+                    cols="30"
+                    row="4"
+                    onChange={(e) => {
+                      setComment(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="d-flex justify-content-end mt-3">
+                  <button
+                    className="button border-0"
+                    onClick={addRatingToProduct}
+                  >
+                    Gửi đánh giá
+                  </button>
+                </div>
               </div>
               <div className="reviews mt-4">
-                <div className="review">
-                  <div className="d-flex gap-10 align-items-center">
-                    <h6 className="mb-0">
-                      <b>PhatPham</b>
-                    </h6>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      activeColor="#ffd700"
-                      value={4}
-                      edit={true}
-                    />
-                  </div>
-                  <p className="mt-3">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Cumque distinctio recusandae delectus vel, eligendi,
-                    deleniti doloribus voluptatum nam ducimus unde quaerat id
-                    sunt totam facilis, officiis modi deserunt iure molestiae.
-                  </p>
-                </div>
+                {productState &&
+                  productState?.ratings?.map((i, index) => {
+                    return (
+                      <div className="review" key={index}>
+                        <div className="d-flex gap-10 align-items-center">
+                          <h6 className="mb-0">
+                            <b>PhatPham</b>
+                          </h6>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            activeColor="#ffd700"
+                            value={i?.star}
+                            edit={false}
+                          />
+                        </div>
+                        <p className="mt-3">
+                          {i?.comment || "Không có đánh giá"}
+                        </p>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           </div>
@@ -363,7 +388,10 @@ const SingleProduct = () => {
             <h3 className="section-heading">Sản phẩm phổ biến</h3>
           </div>
           <div className="row">
-            <ProductCard />
+            <ProductCard
+              className="col-6 col-md-3 col-lg-3"
+              data={popularProduct}
+            />
           </div>
         </div>
       </Container>

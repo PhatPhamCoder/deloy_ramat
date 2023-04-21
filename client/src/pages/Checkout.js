@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
 import { Link, resolvePath } from "react-router-dom";
 import Meta from "../components/Meta";
@@ -10,6 +11,8 @@ import { useFormik } from "formik";
 import { object, string } from "yup";
 import { createAnOrder } from "../features/user/userSlice";
 import { FaShippingFast } from "react-icons/fa";
+import logo from "../images/logo-header.png";
+import momoWallet from "../images/MOMO.jpg";
 const shippingSchema = object({
   firstName: string().required("Vui lòng điền họ và tên đệm!"),
   lastName: string().required("Vui lòng điền tên!"),
@@ -27,11 +30,11 @@ const shippingSchema = object({
 
 const Checkout = () => {
   const dispatch = useDispatch();
-  const cartState = useSelector((state) => state.auth.cartProduct);
+  const cartState = useSelector((state) => state?.auth?.cartProduct);
   const [totalAmount, setTotalAmount] = useState(null);
   const [shippingInfo, setShippingInfo] = useState(null);
   const [cartProductState, setCartProductState] = useState([]);
-
+  const authState = useSelector((state) => state?.auth?.user);
   useEffect(() => {
     let sum = 0;
     for (let index = 0; index < cartState?.length; index++) {
@@ -87,14 +90,12 @@ const Checkout = () => {
     );
   };
 
-  console.log(shippingInfo);
-
   return (
     <>
       <Meta title="Thanh toán" />
       <Container class1="checkout-wrapper py-5 home-wrapper-2">
         <div className="row">
-          <div className="col-7">
+          <div className="col-12 col-md-7 col-lg-7 mb-3">
             <div className="checkout-left-data">
               <h3 className="website-name">Ramat Note Book</h3>
               <nav
@@ -111,13 +112,6 @@ const Checkout = () => {
                   <li className="breadcrumb-item" aria-current="page">
                     Thông tin đặt hàng
                   </li>
-                  {/* <li className="breadcrumb-item active" aria-current="page">
-                    Giao hàng
-                  </li>
-                  &nbsp;
-                  <li className="breadcrumb-item active" aria-current="page">
-                    Thanh toán
-                  </li> */}
                 </ol>
               </nav>
               <h4 className="title">Thông tin đặt hàng</h4>
@@ -125,7 +119,8 @@ const Checkout = () => {
               <div className="tab-content" id="myTabContent">
                 <div id="home" role="tabpanel" aria-labelledby="home-tab">
                   <p className="user-details">
-                    Matta Nguyễn (cskh@ramatnotebook.com)
+                    {authState?.firstname + authState?.lastname} (
+                    {authState?.email})
                   </p>
                   <h4 className="mb-3">Địa chỉ giao hàng</h4>
                   <form
@@ -286,16 +281,19 @@ const Checkout = () => {
                         </Link>
                       </div>
                     </div>
-                    <button className="button" type="submit">
-                      Thanh toán
-                    </button>
                   </form>
                 </div>
               </div>
             </div>
           </div>
           {/* Thông tin đơn hàng */}
-          <div className="col-5 bg-white" style={{ borderRadius: "10px" }}>
+          <div
+            className="col-12 col-md-5 col-lg-5 bg-white"
+            style={{
+              borderRadius: "10px",
+              boxShadow: "0px 0px 5px",
+            }}
+          >
             <div className="border-2 py-4">
               <h3 className="text-center fw-bold text-red pb-2">
                 Chi tiết đơn hàng
@@ -304,7 +302,7 @@ const Checkout = () => {
                 cartState?.map((item, index) => {
                   return (
                     <div key={index}>
-                      <div className="d-flex gap-10 justify-content-between">
+                      <div className="d-flex gap-2 justify-content-between">
                         <div className="w-75 d-flex gap-10">
                           <div className="d-flex gap-10 mt-3">
                             <div className="w-25 position-relative">
@@ -364,7 +362,7 @@ const Checkout = () => {
                 })}
               <div>
                 <div className="d-flex justify-content-between align-items-center">
-                  <p className="mb-0 total flex gap-10">
+                  <p className="mb-0 total flex">
                     <FaShippingFast size={20} className="mr-4" />
                     Phí Ship
                   </p>
@@ -384,7 +382,7 @@ const Checkout = () => {
                   )}
                 </div>
               </div>
-              <div className="d-flex justify-content-between align-items-center py-4">
+              <div className="d-flex justify-content-between align-items-center py-2">
                 <h4 className="total fw-bold fs-5">Tổng cộng</h4>
                 <h5 className="total-price fs-5 fw-bold">
                   <Currency
@@ -398,6 +396,98 @@ const Checkout = () => {
                     group="."
                   />
                 </h5>
+              </div>
+              <div className="d-flex flex-column mx-auto">
+                <button
+                  className="w-75 mb-2"
+                  type="button"
+                  style={{
+                    outline: "none",
+                    backgroundColor: "#ae2070",
+                    color: "white",
+                    borderRadius: "5px",
+                    border: "none",
+                    padding: "5px",
+                    margin: "0 auto",
+                    cursor: "pointer",
+                  }}
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                    width="40px"
+                    height="40px"
+                  />
+                  Thanh toán nhanh bằng MoMo
+                </button>
+                <button
+                  className="w-75"
+                  type="submit"
+                  onClick={formik.handleSubmit}
+                  style={{
+                    outline: "none",
+                    backgroundColor: "none",
+                    border: "none",
+                    margin: "0 auto",
+                    borderRadius: "5px",
+                    padding: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <img src={logo} width="80px" height="30px" /> Thanh toán
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Thanh toán MoMo */}
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Vui lòng quét mã thanh toán
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div className="d-flex mx-auto align-items-center justify-content-center">
+                  <img
+                    src={momoWallet}
+                    alt="payment"
+                    width="60%"
+                    height="100%"
+                    style={{ borderRadius: "5px" }}
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  onClick={formik.handleSubmit}
+                  class="btn btn-primary"
+                >
+                  Thanh toán
+                </button>
               </div>
             </div>
           </div>

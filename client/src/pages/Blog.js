@@ -18,13 +18,13 @@ const Blog = () => {
 
   return (
     <>
-      <Meta title="Out Story" />
-      <BreakCrumb title="Out Story" />
-      <Container class1="blog-wrapper home-wrapper-2 py-5">
+      <Meta title="Our Story" />
+      <BreakCrumb title="Our Story" />
+      <Container class1="blog-wrapper home-wrapper-2">
         <div className="container-xxl">
           <div className="row">
-            <div className="col-3">
-              <div className="filter-card mb-3">
+            <div className="col-12 col-md-3 col-lg-3">
+              <div className="filter-card my-3">
                 <h3 className="filter-title">Danh mục bài viết</h3>
                 <div>
                   <ul className="ps-0">
@@ -36,12 +36,15 @@ const Blog = () => {
                 </div>
               </div>
             </div>
-            <div className="col-9">
+            <div className="col-12 col-md-9 col-lg-9">
               <div className="row">
                 {blogState &&
                   blogState?.map((item, index) => {
                     return (
-                      <div className="col-4 mb-3" key={index}>
+                      <div
+                        className="col-12 col-md-3 col-lg-3 my-3"
+                        key={index}
+                      >
                         <BlogCard
                           id={item?._id}
                           title={item?.title}
