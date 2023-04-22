@@ -121,7 +121,7 @@ const SingleProduct = () => {
       <BreakCrumb
         title={productState?.title ? productState?.title : "Ramat NoteBook"}
       />
-      <Container class1="main-product-wrapper py-5 home-wrapper-2">
+      <Container class1="main-product-wrapper pb-3 home-wrapper-2">
         <div className="row">
           <div className="col-12 col-md-6 col-lg-6">
             <div className="main-product-image">
@@ -129,14 +129,24 @@ const SingleProduct = () => {
                 <ReactImageZoom {...props} />
               </div>
             </div>
-            <div className="other-product-images d-flex flex-wrap gap-15">
-              {productState?.images?.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <img src={item.url} className="img-fluid" alt="" />
-                  </div>
-                );
-              })}
+            <div
+              className="d-flex mx-auto bg-white my-4 p-3"
+              style={{ borderRadius: "8px" }}
+            >
+              <div className="row">
+                {productState?.images?.map((item, index) => {
+                  return (
+                    <div className="col-6 col-md-6 p-2" key={index}>
+                      <img
+                        src={item?.url}
+                        className="img-fluid"
+                        alt=""
+                        style={{ borderRadius: "8px" }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="col-12 col-md-6 col-lg-6">
@@ -293,7 +303,7 @@ const SingleProduct = () => {
           </div>
         </div>
       </Container>
-      <Container class1="description-wrapper py-5 home-wrapper-2">
+      <Container class1="description-wrapper pb-3 home-wrapper-2">
         <div className="row">
           <div className="col-12">
             <h4>
@@ -388,10 +398,9 @@ const SingleProduct = () => {
             <h3 className="section-heading">Sản phẩm phổ biến</h3>
           </div>
           <div className="row">
-            <ProductCard
-              className="col-6 col-md-3 col-lg-3"
-              data={popularProduct}
-            />
+            <div className="col-12 col-md-6 col-lg-6">
+              <ProductCard data={popularProduct} />
+            </div>
           </div>
         </div>
       </Container>

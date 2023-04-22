@@ -1056,12 +1056,10 @@ footer .pay-wrapper {
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 680px) {
   .logo-header {
     display: none;
   }
-
-
 
   .slide-header-image {
     max-height: 150px;
@@ -1158,4 +1156,5 @@ footer .pay-wrapper {
   .filter-sort-grid {
     margin-left: 10px;
   }
+
 }

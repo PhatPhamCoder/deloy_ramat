@@ -62,35 +62,30 @@ const Cart = () => {
       <Container class1="cart-wrapper home-wrapper-2 py-5">
         <div className="container-xxl">
           <div className="row">
-            <div className="col col-md-8 col-lg-8">
-              {/* <div className="cart-header d-flex justify-content-between align-items-center">
-                <h4 className="cart-col-1">Tên sản phẩm</h4>
-                <h4 className="cart-col-2">Giá tiền</h4>
-                <h4 className="cart-col-3">Số lượng</h4>P
-                <h4 className="cart-col-4">Thành tiền</h4>
-              </div> */}
+            <div className="col-12 col-md-8 col-lg-8 p-0">
               {userCartState &&
                 userCartState?.map((item, index) => {
                   return (
                     <div
+                      key={index}
                       style={{
                         border: "2px solid #0099ff",
                         borderRadius: "8px",
-                        padding: "8px",
+                        padding: "3px",
                         marginBottom: "10px",
                       }}
                     >
-                      <div className="row mb-2">
-                        <div className="col-4">
+                      <div className="row mb-2 p-2">
+                        <div className="col-12 col-md-4 mb-2">
                           <img
                             src={item?.productId?.images?.[0]?.url}
                             alt="product-name"
-                            className="img-fluid rounded-3 m-0 p-0"
+                            className="img-fluid rounded-3 p-0"
                           />
                         </div>
-                        <div className="col-8 mb-0">
-                          <p className="d-flex justify-content-between">
-                            {item?.productId?.title}
+                        <div className="col-12 col-md-8 mb-0">
+                          <div className="d-flex justify-content-between">
+                            <h5> {item?.productId?.title}</h5>
                             <h5 className="price">
                               <Currency
                                 quantity={item?.price}
@@ -101,7 +96,7 @@ const Cart = () => {
                                 group="."
                               />
                             </h5>
-                          </p>
+                          </div>
                           <p>Kích thước: A5</p>
                           <p className="d-flex gap-3">
                             Màu sắc:
@@ -135,7 +130,7 @@ const Cart = () => {
                       <div className="d-flex align-items-center justify-content-between border-top pt-2">
                         <div className="d-flex gap-2">
                           Tình trạng:
-                          {item?.quantity > 5 ? (
+                          {item?.quantity > 0 ? (
                             <p className="mb-1" style={{ color: "#30b68a" }}>
                               Còn hàng
                             </p>
@@ -159,25 +154,25 @@ const Cart = () => {
               className="col-12 col-md-4 col-lg-4 py-2 bg-white"
               style={{ borderRadius: "10px" }}
             >
-              {userCartState &&
-                userCartState?.map((item, index) => {
-                  return (
-                    <>
-                      <div className="d-flex align-items-center justify-content-between mb-1">
-                        <h5>Bạn có mã ưu đãi?</h5>
-                        <FaPercent onClick={() => setOpen(true)} />
-                      </div>
-                      {open === true && (
-                        <div className="d-flex justify-content-start align-items-center gap-2 mb-2">
-                          <input
-                            className="input-group-cart"
-                            type="text"
-                            placeholder="Nhập mã ưu đãi tại đây"
-                          />
-                          <span className="button-submit">Áp dụng</span>
-                        </div>
-                      )}
-                      <h4 className="fw-bold">Thanh Toán</h4>
+              <>
+                <div className="d-flex align-items-center justify-content-between mb-1">
+                  <h5>Bạn có mã ưu đãi?</h5>
+                  <FaPercent onClick={() => setOpen(true)} />
+                </div>
+                {open === true && (
+                  <div className="d-flex justify-content-start align-items-center gap-2 mb-2">
+                    <input
+                      className="input-group-cart"
+                      type="text"
+                      placeholder="Nhập mã ưu đãi tại đây"
+                    />
+                    <span className="button-submit">Áp dụng</span>
+                  </div>
+                )}
+                <h4 className="fw-bold">Thanh Toán</h4>
+                {userCartState &&
+                  userCartState?.map((item, index) => {
+                    return (
                       <div className="d-flex align-items-center justify-content-between mb-3">
                         <h5>Tổng giá trị sản phẩm</h5>
                         <p className="mb-0 fw-bold">
@@ -191,65 +186,61 @@ const Cart = () => {
                           />
                         </p>
                       </div>
-                      <div className="d-flex align-items-center justify-content-between border-bottom mb-3">
-                        <h5>Phí vận Chuyển</h5>
-                        {totalAmount < "500000" ? (
-                          <p className="mb-0 fw-bold">
-                            <Currency
-                              quantity={30000}
-                              currency="VND"
-                              locale="vi_VN"
-                              pattern="##,### !"
-                              decimal=","
-                              group="."
-                            />
-                          </p>
-                        ) : (
-                          <p className="fs-5">Free Ship</p>
-                        )}
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center gap-2 mb-2">
-                        <h5>Tổng giá trị phải thanh toán</h5>
-                        <p className="mb-0 fw-bold">
-                          <Currency
-                            quantity={
-                              totalAmount < "500000"
-                                ? totalAmount + 30000
-                                : totalAmount
-                            }
-                            currency="VND"
-                            locale="vi_VN"
-                            pattern="##,### !"
-                            decimal=","
-                            group="."
-                          />
-                        </p>
-                      </div>
-                      <p className="d-flex justify-content-end">
-                        Thuế và vận chuyển được tính khi thanh toán
-                      </p>
-                      <p className="d-flex justify-content-end">
-                        Tải lại trang nếu không thấy đơn hàng
-                      </p>
-                      <div className="d-flex flex-column justify-content-between align-items-center gap-3">
-                        <Link
-                          to="/product"
-                          className="button w-100 text-center"
-                        >
-                          Tiếp tục mua sắm
-                        </Link>
-                        <Link
-                          to="/checkout"
-                          className="button w-100 text-center fw-bold"
-                        >
-                          Thanh toán
-                        </Link>
-                        <br />
-                      </div>
-                    </>
-                  );
-                })}
-
+                    );
+                  })}
+                <div className="d-flex align-items-center justify-content-between border-bottom mb-3">
+                  <h5>Phí vận Chuyển</h5>
+                  {totalAmount < "500000" ? (
+                    <p className="mb-0 fw-bold">
+                      <Currency
+                        quantity={30000}
+                        currency="VND"
+                        locale="vi_VN"
+                        pattern="##,### !"
+                        decimal=","
+                        group="."
+                      />
+                    </p>
+                  ) : (
+                    <p className="fs-5">Free Ship</p>
+                  )}
+                </div>
+                <div className="d-flex justify-content-between align-items-center gap-2 mb-2">
+                  <h5>Tổng giá trị phải thanh toán</h5>
+                  <p className="mb-0 fw-bold">
+                    <Currency
+                      quantity={
+                        totalAmount < "500000"
+                          ? totalAmount + 30000
+                          : totalAmount
+                      }
+                      currency="VND"
+                      locale="vi_VN"
+                      pattern="##,### !"
+                      decimal=","
+                      group="."
+                    />
+                  </p>
+                </div>
+                <p className="d-flex justify-content-end">
+                  Thuế và vận chuyển được tính khi thanh toán
+                </p>
+                <p className="d-flex justify-content-end">
+                  Tải lại trang nếu không thấy đơn hàng
+                </p>
+                <div className="d-flex flex-column justify-content-between align-items-center gap-3">
+                  <Link to="/product" className="button w-100 text-center">
+                    Tiếp tục mua sắm
+                  </Link>
+                  <Link
+                    to="/checkout"
+                    className="button w-100 text-center fw-bold"
+                  >
+                    Thanh toán
+                  </Link>
+                  <br />
+                </div>
+              </>
               {/* {(totalAmount !== 0 || totalAmount !== null) && (
                 <div className="d-flex flex-column align-items-end">
                   <h4 className="fw-bold">

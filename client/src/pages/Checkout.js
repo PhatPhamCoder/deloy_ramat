@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
-import { Link, resolvePath } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Meta from "../components/Meta";
 import { BiArrowBack } from "react-icons/bi";
 import Container from "../components/Container";
@@ -13,13 +13,14 @@ import { createAnOrder } from "../features/user/userSlice";
 import { FaShippingFast } from "react-icons/fa";
 import logo from "../images/logo-header.png";
 import momoWallet from "../images/MOMO.jpg";
+import { apiGetPublicProvinces } from "../services/app";
+import { toast } from "react-toastify";
+import { getAllProduct } from "../features/products/productSlice";
 const shippingSchema = object({
   firstName: string().required("Vui lòng điền họ và tên đệm!"),
   lastName: string().required("Vui lòng điền tên!"),
   address: string().required("Vui lòng nhập địa chỉ nhận hàng"),
-  state: string().required("Vui lòng chọn quận/huyện"),
   city: string().required("Vui lòng chọn thành phố"),
-  country: string().required("Vui lòng chọn phường/xã"),
   mobile: string()
     .default("")
     .nullable()
@@ -35,12 +36,14 @@ const Checkout = () => {
   const [shippingInfo, setShippingInfo] = useState(null);
   const [cartProductState, setCartProductState] = useState([]);
   const authState = useSelector((state) => state?.auth?.user);
+  const [provinces, setProvinces] = useState([]);
+
   useEffect(() => {
     let sum = 0;
     for (let index = 0; index < cartState?.length; index++) {
       sum =
         sum +
-        Number(cartState[index].quantity) * Number(cartState[index].price);
+        Number(cartState[index]?.quantity) * Number(cartState[index]?.price);
       setTotalAmount(sum);
     }
   }, [cartState]);
@@ -58,14 +61,28 @@ const Checkout = () => {
     setCartProductState(items);
   }, [cartState]);
 
+  useEffect(() => {
+    dispatch(getAllProduct());
+  }, []);
+
+  useEffect(() => {
+    const fetchPublicProvince = async () => {
+      const resProvince = await apiGetPublicProvinces();
+      if (resProvince.status === 200) {
+        setProvinces(resProvince?.data?.results);
+      } else {
+        toast.error("Dữ liệu bị lỗi!");
+      }
+    };
+    fetchPublicProvince();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       address: "",
-      state: "",
       city: "",
-      country: "",
       mobile: "",
       pincode: "",
       other: "",
@@ -75,7 +92,7 @@ const Checkout = () => {
       setShippingInfo(values);
       setTimeout(() => {
         checkOutHandler();
-      }, 500);
+      }, 200);
     },
   });
 
@@ -137,11 +154,19 @@ const Checkout = () => {
                         value={formik.values.city}
                       >
                         <option value="" selected disabled>
-                          Chọn tỉnh thành
+                          ---Chọn tỉnh thành---
                         </option>
-                        <option value="Ho Chi Minh">
-                          Thành Phố Hồ Chí Minh
-                        </option>
+                        {provinces &&
+                          provinces?.map((item) => {
+                            return (
+                              <option
+                                value={item?.province_name}
+                                key={item?.province_id}
+                              >
+                                {item?.province_name}
+                              </option>
+                            );
+                          })}
                       </select>
                       <div className="errors">
                         {formik.touched.city && formik.errors.city}
@@ -203,42 +228,47 @@ const Checkout = () => {
                         {formik.touched.mobile && formik.errors.mobile}
                       </div>
                     </div>
-                    <div className="flex-grow-1">
+                    {/* <div className="flex-grow-1">
                       <select
-                        name="country"
+                        name="district"
                         className="form-control form-select"
                         id=""
-                        onChange={formik.handleChange("country")}
-                        onBlur={formik.handleBlur("country")}
-                        value={formik.values.country}
+                        onChange={formik.handleChange("district")}
+                        onBlur={formik.handleBlur("district")}
+                        value={formik.values.district}
                       >
                         <option value="" selected disabled>
                           Quận/Huyện
                         </option>
                         <option value="Quan 12">Quận 12</option>
+                        <option value="Bình Thạnh">Bình Thạnh</option>
+                        <option value="Quận 3">Quận 3</option>
+                        <option value="Quận 10">Quận 10</option>
                       </select>
                       <div className="errors">
-                        {formik.touched.country && formik.errors.country}
+                        {formik.touched.district && formik.errors.district}
                       </div>
                     </div>
                     <div className="flex-grow-1">
                       <select
-                        name="state"
+                        name="ward"
                         className="form-control form-select"
                         id=""
-                        onChange={formik.handleChange("state")}
-                        onBlur={formik.handleBlur("state")}
-                        value={formik.values.state}
+                        onChange={formik.handleChange("ward")}
+                        onBlur={formik.handleBlur("ward")}
+                        value={formik.values.ward}
                       >
                         <option value="" selected disabled>
                           Phường/Xã
                         </option>
-                        <option value="Thanh Xuan">Thạnh Xuân</option>
+                        <option value="Thạnh Xuân">Thạnh Xuân</option>
+                        <option value="Phường 25">Phường 25</option>
+                        <option value="Thạnh Xuân">Phường 25</option>
                       </select>
                       <div className="errors">
-                        {formik.touched.state && formik.errors.state}
+                        {formik.touched.ward && formik.errors.ward}
                       </div>
-                    </div>
+                    </div> */}
                     <div className="flex-grow-1">
                       <input
                         name="pincode"

@@ -31,7 +31,7 @@ const Header = () => {
   useEffect(() => {
     let sum = 0;
     for (let index = 0; index < cartState?.length; index++) {
-      sum = sum + Number(cartState[index].quantity);
+      sum = sum + Number(cartState[index]?.quantity);
       setTotal(sum);
     }
   }, [cartState]);
@@ -42,7 +42,6 @@ const Header = () => {
       const element = productState[index];
       data.push({ id: index, prod: element?._id, name: element?.title });
     }
-
     setProductOpt(data);
   }, [productState]);
 

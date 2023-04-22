@@ -304,6 +304,7 @@ const Home = () => {
           </div>
         </div>
       </Container>
+      <Container class1="mb-0"></Container>
     </>
   );
 };

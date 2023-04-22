@@ -7,7 +7,7 @@ import { object, string, number } from "yup";
 import { useFormik } from "formik";
 import { registerUser } from "../features/user/userSlice";
 import logoHeader from "../images/logo-header.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const signUpSchema = object({
   firstname: string().required("Họ và tên đệm không được để trống"),
   lastname: string().required("Tên không được để trống"),
@@ -20,6 +20,7 @@ const signUpSchema = object({
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       firstname: "",
@@ -31,6 +32,9 @@ const Signup = () => {
     validationSchema: signUpSchema,
     onSubmit: (values) => {
       dispatch(registerUser(values));
+      setTimeout(() => {
+        navigate("/login");
+      }, 500);
     },
   });
 
@@ -48,7 +52,6 @@ const Signup = () => {
               />
               <h2 className="text-center mb-3">Đăng ký tài khoản</h2>
               <form
-                action=""
                 onSubmit={formik.handleSubmit}
                 className="d-flex flex-column gap-10"
               >
@@ -113,7 +116,10 @@ const Signup = () => {
                 </div>
                 <div>
                   <div className="d-flex justify-content-center gap-15 align-items-center mt-3">
-                    <button className="button border-0 fw-bold fs-5">
+                    <button
+                      className="button border-0 fw-bold fs-5"
+                      type="submit"
+                    >
                       Đăng ký
                     </button>
                   </div>
