@@ -1,9 +1,23 @@
 import axios from "axios";
-import { base_url, config } from "../../utils/axiosConfig";
+import { base_url } from "../../utils/axiosConfig";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
+
+const getTokenfromLocalStorage = localStorage.getItem("customer")
+  ? JSON.parse(localStorage.getItem("customer"))
+  : null;
+
+// console.log(getTokenfromLocalStorage);
+export const config = {
+  headers: {
+    Authorization: `Bearer ${
+      getTokenfromLocalStorage !== null ? getTokenfromLocalStorage.token : ""
+    }`,
+    Accept: "application/json",
+  },
+};
 
 const register = async (userData) => {
   const response = await axiosInstance.post(
@@ -42,17 +56,17 @@ const addToCart = async (cartData) => {
   }
 };
 
-const getCart = async () => {
-  const response = await axiosInstance.get(`${base_url}user/cart`, config);
+const getCart = async (data) => {
+  const response = await axiosInstance.get(`${base_url}user/cart`, data);
   if (response.data) {
     return response.data;
   }
 };
 
-const removeProductFromCart = async (cartItemId) => {
+const removeProductFromCart = async (data) => {
   const response = await axiosInstance.delete(
-    `${base_url}user/delete-product-cart/${cartItemId}`,
-    config,
+    `${base_url}user/delete-product-cart/${data.id}`,
+    data.configCart,
   );
   if (response.data) {
     return response.data;
@@ -93,8 +107,8 @@ const getUserOrders = async () => {
 const updateUser = async (data) => {
   const response = await axiosInstance.put(
     `${base_url}user/edit-user`,
-    data,
-    config,
+    data.data,
+    data.configUpdateUser,
   );
   if (response.data) {
     return response.data;
@@ -121,6 +135,16 @@ const resetPassword = async (data) => {
   }
 };
 
+const emptyCart = async (data) => {
+  const response = await axiosInstance.delete(
+    `${base_url}user/empty-cart`,
+    data,
+  );
+  if (response.data) {
+    return response.data;
+  }
+};
+
 export const authService = {
   register,
   login,
@@ -134,4 +158,5 @@ export const authService = {
   updateUser,
   forgotPassword,
   resetPassword,
+  emptyCart,
 };

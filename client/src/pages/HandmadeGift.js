@@ -5,8 +5,8 @@ import { Container } from "react-bootstrap";
 const HandmadeGift = () => {
   return (
     <>
-      <Meta title="Contact" />
-      <BreakCrumb title="Contact" />
+      <Meta title="Handmade Gift" />
+      <BreakCrumb title="Handmade Gift" />
       <Container>
         <div className="row">
           <div className="col-12">

@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Meta from "../components/Meta";
 import Container from "../components/Container";
 import CustomInput from "../components/CustomInput";
@@ -19,6 +19,7 @@ const signUpSchema = object({
 });
 
 const Signup = () => {
+  const authState = useSelector((state) => state?.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
@@ -32,11 +33,14 @@ const Signup = () => {
     validationSchema: signUpSchema,
     onSubmit: (values) => {
       dispatch(registerUser(values));
-      setTimeout(() => {
-        navigate("/login");
-      }, 500);
     },
   });
+
+  useEffect(() => {
+    if (authState?.createdUser !== null && authState.isError === false) {
+      navigate("/login");
+    }
+  }, [authState]);
 
   return (
     <>

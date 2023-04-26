@@ -14,13 +14,25 @@ import Currency from "react-currency-formatter";
 import { FaPercent } from "react-icons/fa";
 
 const Cart = () => {
+  const getTokenfromLocalStorage = localStorage.getItem("customer")
+    ? JSON.parse(localStorage.getItem("customer"))
+    : null;
+
+  const configCart = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenfromLocalStorage !== null ? getTokenfromLocalStorage.token : ""
+      }`,
+      Accept: "application/json",
+    },
+  };
   const dispatch = useDispatch();
   const [productUpdateDetail, setProductUpdateDetail] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
   const [open, setOpen] = useState(false);
   const userCartState = useSelector((state) => state?.auth?.cartProduct);
   useEffect(() => {
-    dispatch(getUserCart());
+    dispatch(getUserCart(configCart));
   }, []);
 
   useEffect(() => {
@@ -32,15 +44,15 @@ const Cart = () => {
         }),
       );
       setTimeout(() => {
-        dispatch(getUserCart());
+        dispatch(getUserCart(configCart));
       }, 200);
     }
   }, [productUpdateDetail]);
 
   const deleteACartProduct = (id) => {
-    dispatch(deleteCartProduct(id));
+    dispatch(deleteCartProduct({ id: id, configCart: configCart }));
     setTimeout(() => {
-      dispatch(getUserCart());
+      dispatch(getUserCart(configCart));
     }, 200);
   };
 
@@ -110,8 +122,9 @@ const Cart = () => {
                             className="form-control btn-outline-none"
                             type="number"
                             min={1}
-                            max={50}
-                            name=""
+                            max={10}
+                            name={"quantity" + item?._id}
+                            id={"cart" + item?._id}
                             value={
                               setProductUpdateDetail?.quantity
                                 ? setProductUpdateDetail?.quantity
@@ -125,6 +138,19 @@ const Cart = () => {
                             }}
                             style={{ width: "100px" }}
                           />
+                          <div className="d-flex align-items-start justify-content-between mb-0 mt-5">
+                            <h5>Tổng giá trị sản phẩm</h5>
+                            <p className="mb-0 fw-bold">
+                              <Currency
+                                quantity={item?.price * item?.quantity}
+                                currency="VND"
+                                locale="vi_VN"
+                                pattern="##,### !"
+                                decimal=","
+                                group="."
+                              />
+                            </p>
+                          </div>
                         </div>
                       </div>
                       <div className="d-flex align-items-center justify-content-between border-top pt-2">
@@ -169,12 +195,16 @@ const Cart = () => {
                     <span className="button-submit">Áp dụng</span>
                   </div>
                 )}
-                <h4 className="fw-bold">Thanh Toán</h4>
+                <h4 className="fw-bold border-bottom">Thanh Toán</h4>
+                <div className="d-flex align-items-center justify-content-between">
+                  <h5>Tên sản phẩm</h5>
+                  <h5>Thành tiền</h5>
+                </div>
                 {userCartState &&
                   userCartState?.map((item, index) => {
                     return (
                       <div className="d-flex align-items-center justify-content-between mb-3">
-                        <h5>Tổng giá trị sản phẩm</h5>
+                        <h5>{item?.productId?.title}</h5>
                         <p className="mb-0 fw-bold">
                           <Currency
                             quantity={item?.price * item?.quantity}
@@ -241,26 +271,6 @@ const Cart = () => {
                   <br />
                 </div>
               </>
-              {/* {(totalAmount !== 0 || totalAmount !== null) && (
-                <div className="d-flex flex-column align-items-end">
-                  <h4 className="fw-bold">
-                    Tổng đơn hàng:
-                    <Currency
-                      quantity={
-                        totalAmount < "500000"
-                          ? totalAmount + 30000
-                          : totalAmount
-                      }
-                      currency="VND"
-                      locale="vi_VN"
-                      pattern="##,### !"
-                      decimal=","
-                      group="."
-                    />
-                  </h4>
-                  <p>Thuế và vận chuyển được tính khi thanh toán</p>
-                </div>
-              )} */}
             </div>
           </div>
         </div>

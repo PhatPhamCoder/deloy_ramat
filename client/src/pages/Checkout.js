@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Meta from "../components/Meta";
 import { BiArrowBack } from "react-icons/bi";
 import Container from "../components/Container";
@@ -9,13 +9,19 @@ import Currency from "react-currency-formatter";
 import { useEffect } from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import { createAnOrder } from "../features/user/userSlice";
+import {
+  createAnOrder,
+  deleteUserCart,
+  getUserCart,
+  resetState,
+} from "../features/user/userSlice";
 import { FaShippingFast } from "react-icons/fa";
 import logo from "../images/logo-header.png";
-import momoWallet from "../images/MOMO.jpg";
+import momoWallet from "../images/MOMO.png";
 import { apiGetPublicProvinces } from "../services/app";
 import { toast } from "react-toastify";
 import { getAllProduct } from "../features/products/productSlice";
+
 const shippingSchema = object({
   firstName: string().required("Vui lòng điền họ và tên đệm!"),
   lastName: string().required("Vui lòng điền tên!"),
@@ -30,7 +36,21 @@ const shippingSchema = object({
 });
 
 const Checkout = () => {
+  const getTokenfromLocalStorage = localStorage.getItem("customer")
+    ? JSON.parse(localStorage.getItem("customer"))
+    : null;
+
+  const configCheckOut = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenfromLocalStorage !== null ? getTokenfromLocalStorage.token : ""
+      }`,
+      Accept: "application/json",
+    },
+  };
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartState = useSelector((state) => state?.auth?.cartProduct);
   const [totalAmount, setTotalAmount] = useState(null);
   const [shippingInfo, setShippingInfo] = useState(null);
@@ -47,6 +67,10 @@ const Checkout = () => {
       setTotalAmount(sum);
     }
   }, [cartState]);
+
+  useEffect(() => {
+    dispatch(getUserCart(configCheckOut));
+  }, []);
 
   useEffect(() => {
     let items = [];
@@ -101,10 +125,12 @@ const Checkout = () => {
       createAnOrder({
         shippingInfo,
         orderItems: cartProductState,
-        totalPrice: totalAmount,
+        totalPrice: totalAmount > "500000" ? totalAmount : totalAmount + 30000,
         totalPriceAfterDiscount: totalAmount,
       }),
     );
+    dispatch(deleteUserCart(configCheckOut));
+    dispatch(resetState());
   };
 
   return (

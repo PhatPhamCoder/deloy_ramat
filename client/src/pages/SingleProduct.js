@@ -129,10 +129,7 @@ const SingleProduct = () => {
                 <ReactImageZoom {...props} />
               </div>
             </div>
-            <div
-              className="d-flex mx-auto bg-white my-4 p-3"
-              style={{ borderRadius: "8px" }}
-            >
+            <div className="d-flex mx-auto bg-white my-4 p-3 rounded-3">
               <div className="row">
                 {productState?.images?.map((item, index) => {
                   return (

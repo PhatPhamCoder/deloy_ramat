@@ -28,6 +28,7 @@ const {
   getAllOrders,
   getSingleOrders,
   updateOrders,
+  emptyCart,
 } = require("../controller/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 // const {
@@ -87,7 +88,7 @@ router.delete(
   authMiddleware,
   updateProductQuantityFromCart,
 );
-// router.delete("/empty-cart", authMiddleware, emptyCart);
+router.delete("/empty-cart", authMiddleware, emptyCart);
 router.delete("/:id", deleteaUser);
 
 router.put("/edit-user", authMiddleware, updatedUser);

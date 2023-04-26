@@ -10,8 +10,6 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
-const uniqid = require("uniqid");
-const orderModel = require("../models/orderModel");
 
 // Create A User
 const createUser = asyncHandler(async (req, res) => {
@@ -283,11 +281,34 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, Please follow this link to reset Your Password. This link is valid still 10 minutes from now,<a href='http://localhost:3000/reset-password/${token}'>CLick here</a>`;
+    const activationUrl = `${process.env.APP_URL}/reset-password/${token}`;
+
+    const resetURL = `
+    <div style="width:100%;background:#0d253f;text-align:left; border-radius:10px">
+      <div style="padding:10px">
+        <h2 style="font-size:20px;font-weight:700;letter-spacing:0.08em;margin:0 0 8px 0;color:#fff">
+          Hi!
+        </h2>
+        <div>
+        <hr style="text-align:left;margin:0px;width:40px;height:3px;color:#01b4e4;background-color:#01b4e4;border-radius:4px;border:none">
+        <p style="font-size:15px;font-weight:300;color:#fff">
+          Đây là Email khôi phục mật khẩu của bạn. Vui lòng nhấn vào nút bên dưới để thay đổi mật khẩu. Đường dẫn có hiệu lực trong vòng 10 phút
+        </p>
+        <a style="color:#fff;border-radius:20px;border:10px solid #01b4e4;background-color:#01b4e4;padding:0 10px;text-transform:uppercase;text-decoration:none;font-weight:700" 
+          href=${activationUrl} target="_blank">Nhấn vào đây!</a>
+        </div>
+        <hr style="margin:20px 0;color:#fff;height:1px;border:0;background-color:#fff;">
+        <p style="margin:0;padding:0;font-size:13px;color:#fff">
+          You are receiving this email because you are a registered user on 
+          <a style="font-size:13px;color:#fff" href="https://www.phatpham.tech" target="_blank">www.phatpham.tech</a>.
+        </p>
+      </div>
+    </div>`;
+
     const data = {
       to: email,
       text: "Hey user",
-      subject: "PhatPham Test Email Send Token change password ^^",
+      subject: "[Ramat NoteBook] Email khôi phục mật khẩu",
       htm: resetURL,
     };
     sendEmail(data);
@@ -300,17 +321,21 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 const resetpassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
-  const hasedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const user = await User.findOne({
-    passwordResetToken: hasedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-  if (!user) throw new Error("Token Expired, Please try again later");
-  user.password = password;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  await user.save();
-  res.json(user);
+  try {
+    const hasedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      passwordResetToken: hasedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+    if (!user) throw new Error("Token Expired, Please try again later");
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 const getWishlist = asyncHandler(async (req, res) => {
@@ -364,6 +389,19 @@ const removeProductFromCart = asyncHandler(async (req, res) => {
       _id: cartItemId,
     });
     res.json(deleteProductFromCart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const deleteCart = await Cart.deleteMany({
+      userId: _id,
+    });
+    res.status(200).json(deleteCart);
   } catch (error) {
     throw new Error(error);
   }
@@ -447,7 +485,6 @@ const updateOrders = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const orders = await Order.findById(id);
-
     orders.orderStatus = req.body.status;
     await orders.save();
     res.status(200).json({ orders });
@@ -622,4 +659,5 @@ module.exports = {
   getAllOrders,
   getSingleOrders,
   updateOrders,
+  emptyCart,
 };

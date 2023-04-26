@@ -84,7 +84,14 @@ const Footer = () => {
                 <Link to="/contact" className="text-white">
                   Liên hệ chúng tôi
                 </Link>
-                <img src={logo} className="w-50 h-50 mt-2" alt="logo-footer" />
+                <img
+                  src={logo}
+                  className="w-50 h-50 mt-2"
+                  alt="logo-footer"
+                  style={{
+                    backgroundColor: "white",
+                  }}
+                />
               </h4>
               <div>
                 <address className="text-white fs-7">
@@ -131,38 +138,38 @@ const Footer = () => {
               </div>
             </div>
             <div className="col-6 col-md-2">
-              <h4 className="text-white mb-4">Information</h4>
+              <h4 className="text-white mb-4">Thông tin</h4>
               <div className="footer-links d-flex flex-column">
                 <Link to="/privacy-policy" className="text-white py-2 mb-1">
-                  Privacy Policy
+                  Chính sách bảo mật
                 </Link>
                 <Link to="/refund-policy" className="text-white py-2 mb-1">
-                  Refund Policy
+                  Chính sách hoàn tiền
                 </Link>
                 <Link to="/term-conditions" className="text-white py-2 mb-1">
-                  Terms & Conditions
+                  Điều khoản và điều kiện
                 </Link>
                 <Link to="/blog" className="text-white py-2 mb-1">
-                  Blogs
+                  Bài viết
                 </Link>
               </div>
             </div>
             <div className="col-6 col-md-2">
-              <h4 className="text-white mb-4">Account</h4>
+              <h4 className="text-white mb-4">Đang suy nghĩ ..</h4>
               <div className="footer-account d-flex flex-column">
                 <Link to="/" end className="text-white py-2 mb-1">
-                  About Us
+                  Về Chúng Tôi
                 </Link>
                 <Link to="/" end className="text-white py-2 mb-1">
-                  Faq
+                  Hỏi đáp
                 </Link>
                 <Link to="/contact" end className="text-white py-2 mb-1">
-                  Contact
+                  Liên hệ
                 </Link>
               </div>
             </div>
             <div className="col-7 col-md-2">
-              <h4 className="text-white mb-4">Quick Links</h4>
+              <h4 className="text-white mb-4">Truy cập nhanh</h4>
               <div className="footer-links d-flex flex-column">
                 <Link to="/" end className="text-white py-2 mb-1">
                   NoteBook
@@ -195,7 +202,7 @@ const Footer = () => {
           <div className="row">
             <div className="col-12">
               <p className="text-center mb-0 text-white">
-                &copy; {new Date().getFullYear()} Powered By Ptech
+                &copy; {new Date().getFullYear()} Powered By Ramat
               </p>
             </div>
           </div>

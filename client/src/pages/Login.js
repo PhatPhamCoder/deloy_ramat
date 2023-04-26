@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Meta from "../components/Meta";
 import CustomInput from "../components/CustomInput";
 import { object, string } from "yup";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 import logoHeader from "../images/logo-header.png";
 
@@ -18,7 +18,7 @@ const loginSchema = object({
 
 const Login = () => {
   const dispatch = useDispatch();
-  // const authState = useSelector((state) => state?.auth);
+  const authState = useSelector((state) => state?.auth);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -28,9 +28,14 @@ const Login = () => {
     validationSchema: loginSchema,
     onSubmit: (values) => {
       dispatch(loginUser(values));
-      navigate("/");
     },
   });
+
+  useEffect(() => {
+    if (authState.user !== null && authState.isError === false) {
+      navigate("/");
+    }
+  }, [authState]);
 
   return (
     <>

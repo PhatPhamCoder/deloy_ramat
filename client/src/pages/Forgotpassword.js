@@ -1,6 +1,5 @@
 import React from "react";
 import Meta from "../components/Meta";
-import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import CustomInput from "../components/CustomInput";
 import { object, string } from "yup";
@@ -16,7 +15,6 @@ const emailSchema = object({
 
 const Forgotpassword = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {

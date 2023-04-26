@@ -16,11 +16,9 @@ const Resetpassword = () => {
   const location = useLocation();
   const getToken = location.pathname.split("/")[2];
   const dispatch = useDispatch();
-  // const authState = useSelector((state) => state?.auth);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      email: "",
       password: "",
     },
     validationSchema: passwordSchema,
@@ -42,10 +40,7 @@ const Resetpassword = () => {
           <div className="col-12">
             <div className="auth-card">
               <h2 className="text-center">Đặt lại mật khẩu</h2>
-              <form
-                onSubmit={formik.handleSubmit}
-                className="d-flex flex-column gap-10"
-              >
+              <form onSubmit={formik.handleSubmit}>
                 <CustomInput
                   type="password"
                   name="password"

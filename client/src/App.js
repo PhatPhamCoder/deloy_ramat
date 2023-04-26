@@ -25,6 +25,7 @@ import { PrivateRoutes } from "./routing/PrivateRoutes";
 import { OpenRoutes } from "./routing/OpenRoutes";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
+import OrderSuccessPage from "./components/OrderSuccessPage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="handmade-gift" element={<HandmadeGift />} />
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:id" element={<SingleBlog />} />
+            <Route path="success-page" element={<OrderSuccessPage />} />
             <Route
               path="cart"
               element={

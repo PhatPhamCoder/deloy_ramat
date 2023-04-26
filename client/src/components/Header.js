@@ -14,10 +14,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { getAProduct } from "../features/products/productSlice";
-import { RxAvatar, RxCrossCircled } from "react-icons/rx";
+import { RxCrossCircled } from "react-icons/rx";
 import { MdPermContactCalendar } from "react-icons/md";
-import logo from "../images/logo-header.png";
+import logoAvatar from "../images/avatar.png";
+import { getUserCart } from "../features/user/userSlice";
 const Header = () => {
+  const getTokenfromLocalStorage = localStorage.getItem("customer")
+    ? JSON.parse(localStorage.getItem("customer"))
+    : null;
+
+  const configCheckOut = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenfromLocalStorage !== null ? getTokenfromLocalStorage.token : ""
+      }`,
+      Accept: "application/json",
+    },
+  };
   const dispatch = useDispatch();
   const [total, setTotal] = useState(null);
   const cartState = useSelector((state) => state?.auth?.cartProduct);
@@ -27,6 +40,10 @@ const Header = () => {
   const [paginate, setPaginate] = useState(true);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getUserCart(configCheckOut));
+  }, []);
 
   useEffect(() => {
     let sum = 0;
@@ -55,13 +72,9 @@ const Header = () => {
       <header className="header-upper">
         <div className="container-xxl">
           <div className="row position-relative">
-            <div className="col-2">
+            <div className="col-2 my-auto">
               <Link to="/" className="logo-header">
-                <img
-                  src={logoHeader}
-                  alt="logo-header"
-                  className="img-fluid py-1"
-                />
+                <img src={logoHeader} alt="logo-header" className="img-fluid" />
               </Link>
               <button className="btn button-menu outline-none">
                 <AiOutlineMenu
@@ -72,7 +85,7 @@ const Header = () => {
               </button>
             </div>
             {/* Search product */}
-            <div className="col-7 py-2">
+            <div className="col-7 py-2 my-auto">
               <div className="input-group">
                 <Typeahead
                   id="search"
@@ -107,14 +120,14 @@ const Header = () => {
                       style={{ color: "black" }}
                     />
                     <span
-                      className="badge fw-bold position-absolute border-circle bg-black bỏdre"
+                      className="badge fw-bold position-absolute border-circle"
                       style={{
                         top: "-10px",
                         right: "-15px",
                         color: "white",
                         border: "2px solid #fff",
                         borderRadius: "50%",
-                        background: "red",
+                        backgroundColor: "red",
                       }}
                     >
                       {total ? total : 0}
@@ -144,7 +157,11 @@ const Header = () => {
                           aria-expanded="false"
                         >
                           <h5 className="mb-0">
-                            <img src={logo} className="user-mobile" alt="" />
+                            <img
+                              src={logoAvatar}
+                              className="user-mobile"
+                              alt=""
+                            />
                           </h5>
                         </div>
                         <div

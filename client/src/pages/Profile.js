@@ -17,6 +17,18 @@ const profileSchema = object({
 });
 
 const Profile = () => {
+  const getTokenfromLocalStorage = localStorage.getItem("customer")
+    ? JSON.parse(localStorage.getItem("customer"))
+    : null;
+
+  const configUpdateUser = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenfromLocalStorage !== null ? getTokenfromLocalStorage.token : ""
+      }`,
+      Accept: "application/json",
+    },
+  };
   const dispatch = useDispatch();
   const userState = useSelector((state) => state?.auth?.user);
   const [edit, setEdit] = useState(true);
@@ -31,7 +43,9 @@ const Profile = () => {
     },
     validationSchema: profileSchema,
     onSubmit: (values) => {
-      dispatch(updateAUser(values));
+      dispatch(
+        updateAUser({ data: values, configUpdateUser: configUpdateUser }),
+      );
       setEdit(true);
     },
   });

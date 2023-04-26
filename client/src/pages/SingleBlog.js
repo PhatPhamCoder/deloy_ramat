@@ -8,7 +8,7 @@ import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { getABlog } from "../features/blog/blogSlice";
 const SingleBlog = () => {
-  const blogState = useSelector((state) => state.blog.singleblog);
+  const blogState = useSelector((state) => state?.blog?.singleblog);
   const location = useLocation();
   const getBlogId = location.pathname.split("/")[2];
 

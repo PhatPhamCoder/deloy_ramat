@@ -19,6 +19,14 @@ import ReactStars from "react-rating-stars-component";
 import { useNavigate } from "react-router-dom";
 import wish from "../images/wish.svg";
 import book02 from "../images/book-02.png";
+import anne from "../images/brand-02.png";
+import boxmarket from "../images/brand-99.png";
+import mle from "../images/mailamenglish.png";
+import thanhhao from "../images/thanh-hao.png";
+import vtmusic from "../images/VT-music.png";
+import vanlang from "../images/van-lang.png";
+import vietaustr from "../images/viet-austr.png";
+import bitrimex from "../images/betrimex.png";
 import addcart from "../images/add-cart.svg";
 import view from "../images/view.svg";
 import { addToWishList } from "../features/products/productSlice";
@@ -279,25 +287,53 @@ const Home = () => {
             <div className="marquee-inner-wrapper bg-white p-3 card-wrapper">
               <Marquee className="d-flex">
                 <div className="mx-4 w-25">
-                  <img src="images/brand-01.png" alt="brand" />
+                  <img src={anne} alt="brand" width="150px" height="150px" />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-02.png" alt="brand" />
+                  <img
+                    src={boxmarket}
+                    width="150px"
+                    height="150px"
+                    alt="The Box Market"
+                  />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-03.png" alt="brand" />
+                  <img
+                    src={mle}
+                    width="150px"
+                    height="150px"
+                    alt="Mai Lam English"
+                  />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-04.png" alt="brand" />
+                  <img
+                    src={thanhhao}
+                    width="150px"
+                    height="150px"
+                    alt="brand"
+                  />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-05.png" alt="brand" />
+                  <img src={vtmusic} width="150px" height="150px" alt="brand" />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-06.png" alt="brand" />
+                  <img src={vanlang} width="150px" height="150px" alt="brand" />
                 </div>
                 <div className="mx-4 w-25">
-                  <img src="images/brand-07.png" alt="brand" />
+                  <img
+                    src={vietaustr}
+                    width="150px"
+                    height="150px"
+                    alt="brand"
+                  />
+                </div>
+                <div className="mx-4 w-25">
+                  <img
+                    src={bitrimex}
+                    width="150px"
+                    height="150px"
+                    alt="brand"
+                  />
                 </div>
               </Marquee>
             </div>
